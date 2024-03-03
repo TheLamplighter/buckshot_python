@@ -8,7 +8,7 @@ class BuckShot_Item(ABC):
     self.id = -1
 
   @abstractmethod
-  def use():
+  def use(actor, env):
     pass
   
   def get_id(self):
@@ -33,45 +33,50 @@ class Damage_Item(BuckShot_Item):
 class Debuff_Item(BuckShot_Item):
   pass
 
+
 # Actual Item Classes Below
 class Cigarrette(Healing_Item):
   def __init__(self):
     self.id = 0
   
-  def use():
-    pass
-  pass
+  def use(actor, env):
+    actor.heal_damage(1)
 
 class Handcuffs(Debuff_Item):
   def __init__(self):
     self.id = 1
 
-  def use():
+  def cuff(tgt):
     pass
-  pass
+
+  def use(actor, env):
+    if (actor == env.Dealer):
+      Handcuffs.cuff(env.Player)
+    else:
+      Handcuffs.cuff(env.Dealer)
 
 class Handsaw(Damage_Item):
   def __init__(self):
     self.id = 2
 
-  def use():
-    pass
+  def use(actor, env):
+    env.Shotgun.dmg = 2
   pass
 
 class Spyglass(Info_Item):
   def __init__(self):
     self.id = 3
 
-  def use():
-    pass
+  def use(actor, env):
+    actor.probability = env.Shotgun.current_bullet()
   pass
 
 class Beer(Info_Item):
   def __init__(self):
     self.id = 4
 
-  def use():
-    pass
+  def use(actor, env):
+    env.Shotgun.eject_shell()
   pass
 
 
@@ -87,12 +92,25 @@ item_id = list(
     Beer(), #4
   )
 
+@classmethod
+def get_list_item_id():
+  return item_id
+
+@classmethod
+def count_items(itemset) -> list:
+  counter = list()
+
+  for L in len(item_id):
+    counter.append(itemset.count(item_id[L]))
+
+  return counter
+
 
 def item_by_id(id) -> object:
   return deepcopy(item_id[id])
 
 def gen_item() -> object:
-  rng = randint(0, len(item_id))
+  rng = randint(0, len(item_id)-1)
   return item_by_id(rng)
 
 @classmethod
@@ -103,3 +121,12 @@ def gen_itemset(number) -> list:
     itemset.append(gen_item())
 
   return itemset
+
+@classmethod
+def gen_alt_itemset(actor, number):
+
+  for L in range(number):
+    x = randint(0, len(item_id)-1)
+    if sum(actor.alt_inventory) >= 8:
+      break
+    actor.alt_inventory[x] += 1

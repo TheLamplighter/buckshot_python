@@ -1,6 +1,8 @@
-class BuckShot_shotgun:
-  def __init__(self, shells):
-    self.shell_arr = shells
+from random import randint
+
+class BuckShot_Shotgun:
+  def __init__(self):
+    self.shell_arr = list()
     self.dmg = 1
 
   def get_damage(self) -> int:
@@ -28,7 +30,7 @@ class BuckShot_shotgun:
     return self.get_shell_array()[0]
 
   def fire_shotgun(self, tgt) -> None:
-    if (self.current_bullet == 1):
+    if (self.current_bullet() == 1):
       tgt.take_damage(self.get_damage())
     self.eject_shell()
 
@@ -41,3 +43,9 @@ class BuckShot_shotgun:
         (self.count_shells(1)) / (self.get_shell_count())
       )
       return prob*100
+    
+  # I know for a fact this isn't how Buckshot Roulette
+  # generates shell arrays, but it will do for now.
+  def gen_shell_array(self, size):
+    for L in range(size):
+      self.add_shell(randint(0, 1))
