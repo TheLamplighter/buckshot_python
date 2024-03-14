@@ -124,9 +124,12 @@ def gen_itemset(number) -> list:
 
 @classmethod
 def gen_alt_itemset(actor, number):
-
   for L in range(number):
-    x = randint(0, len(item_id)-1)
+
+    # TODO: Generalize this to all no-no items.
+    while (x == 0) and (actor.alt_inventory[x] >= 2):
+      x = randint(0, len(item_id)-1)
+    
     if sum(actor.alt_inventory) >= 8:
       break
     actor.alt_inventory[x] += 1
