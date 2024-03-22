@@ -10,6 +10,9 @@ class BuckShot_Item(ABC):
   @abstractmethod
   def use(actor, env):
     pass
+
+  def check_invalid(actor):
+    return False
   
   def get_id(self):
     return self.id
@@ -41,6 +44,12 @@ class Cigarrette(Healing_Item):
   
   def use(actor, env):
     actor.heal_damage(1)
+
+  def check_invalid(actor):
+    if actor.alt_inventory[id] >= 2:
+      return True
+    else:
+      return False
 
 class Handcuffs(Debuff_Item):
   def __init__(self):
@@ -126,8 +135,7 @@ def gen_itemset(number) -> list:
 def gen_alt_itemset(actor, number):
   for L in range(number):
 
-    # TODO: Generalize this to all no-no items.
-    while (x == 0) and (actor.alt_inventory[x] >= 2):
+    while (item_id[x].check_invalid(actor)):
       x = randint(0, len(item_id)-1)
     
     if sum(actor.alt_inventory) >= 8:
