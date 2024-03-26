@@ -10,6 +10,9 @@ class BuckShot_Item(ABC):
   @abstractmethod
   def use(actor, env):
     pass
+
+  def check_invalid(actor):
+    return False
   
   def get_id(self):
     return self.id
@@ -43,6 +46,12 @@ class Cigarrette(Healing_Item):
   def use(actor, env):
     actor.heal_damage(1)
 
+  def check_invalid(self, actor):
+    if actor.get_itemcount(self.id) >= 2:
+      return True
+    else:
+      return False
+
 class Handcuffs(Debuff_Item):
   def __init__(self):
     self.id = 1
@@ -51,10 +60,8 @@ class Handcuffs(Debuff_Item):
     pass
 
   def use(actor, env):
-    if (actor == env.Dealer):
-      Handcuffs.cuff(env.Player)
-    else:
-      Handcuffs.cuff(env.Dealer)
+    Handcuffs.cuff(actor.other_guy)
+    return
 
 class Handsaw(Damage_Item):
   def __init__(self):
@@ -101,15 +108,6 @@ def get_list_item_id():
 def get_item_id_size():
   return len(item_id)
 
-@classmethod
-def count_items(itemset) -> list:
-  counter = list()
-
-  for L in len(item_id):
-    counter.append(itemset.count(item_id[L]))
-
-  return counter
-
 
 def item_by_id(id) -> object:
   return deepcopy(item_id[id])
@@ -130,11 +128,9 @@ def gen_itemset(number) -> list:
 @classmethod
 def gen_alt_itemset(actor, number):
   for L in range(number):
-
     x = randint(0, get_item_id_size-1)
 
-    # TODO: Generalize this to all no-no items.
-    while (x == 0) and (actor.get_itemcount(x) >= 2):
+    while (item_id[x].check_invalid(actor)):
       x = randint(0, get_item_id_size-1)
     
     if (actor.get_inventory_size == actor.get_inventory_max):
