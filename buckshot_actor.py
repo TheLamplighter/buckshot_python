@@ -1,90 +1,142 @@
 from abc import ABC, abstractmethod
+from numpy import clip
 from buckshot_item import get_list_item_id
 
 class BuckShot_Actor():
   def __init__(self, max_health=2) -> None:
+    # Essential Stats
     self.max_health = max_health
     self.cur_health = max_health
-    #self.inventory = list()
-    self.alt_inventory = [0]*len(get_list_item_id())
+    self.max_inventory = 8
+    self.inventory = [0]*len(get_list_item_id())
     
-    self.probability = 0.5
+    # Senses
     self.env = object
+    self.probability = 0.5
     self.cuffed = False
+    self.other_guy = object
+  
 
-  def set_env(self, env) -> None:
-    self.env = env
-    
+
+  #Getters
+  def get_max_health(self) -> int:
+    return self.max_health
+  
+  def get_cur_health(self) -> int:
+    return self.cur_health
+  
+  def get_hp_percent(self) -> int:
+    per = self.cur_health / self.max_health
+    return per*100
+  
+
+  def get_inventory(self) -> list:
+    return self.inventory
+  
+  def get_inventory_max(self) -> int:
+    return self.max_inventory
+  
+  def get_inventory_size(self) -> int:
+    return sum(self.inventory)
+  
+  def get_itemcount(self, item_index) -> int:
+    return self.inventory[item_index]
+  
+  def has_item(self, item_index) -> bool:
+    return (self.get_itemcount(item_index) > 0)
+  
+
+  def get_env(self) -> object:
+    return self.env
+  
+  def get_other_guy(self) -> object:
+    return self.other_guy
+  
+  def get_shotgun(self) -> object:
+    return self.env.Shotgun
+  
+
+  def get_cuffed_status(self) -> bool:
+    return self.cuffed
+  
+
+
+  #Setters
   def set_max_health(self, value) -> None:
     self.max_health = value
     return
+  
+  def set_cur_health(self, value) -> None:
+    self.cur_health = clip(0, value, self.max_health)
+    return
 
   def take_damage(self, dmg) -> None:
-    if (self.cur_health >= dmg):
-      self.cur_health = self.cur_health - dmg
-    else:
-      self.cur_health = 0
+    self.set_cur_health(self.cur_health - dmg)
     return
   
   def heal_damage(self, heal) -> None:
-    self.cur_health = self.cur_health + heal
+    self.set_cur_health(self.cur_health + heal)
+    return
+  
 
-    if (self.cur_health > self.max_health):
-      self.cur_health = self.max_health
-    
+  def set_env(self, env) -> None:
+    self.env = env
     return
 
 
-  '''def get_inventory(self) -> list:
-    return self.inventory'''
-  
-  def get_alt_inventory(self) -> list:
-    return self.alt_inventory
-  
-  def use_item(self, item) -> None:
-    item.use(self, self.env)
+  def clear_inventory(self) -> None:
+    self.inventory = [0]*len(get_list_item_id)
+    return
 
-  '''def clear_inventory(self):
-    self.inventory = list()
-    return'''
-  
-  def clear_alt_inventory(self):
-    self.alt_inventory = [0]*len(get_list_item_id())
-  
-
-  '''def add_item(self, new_item):
-    if len(self.items) >= 8:
-      return
+  def set_item_qty(self, item, qty) -> None:
+    if clip(0, item, len(self.inventory)-1) == item:
+      self.inventory[item] = clip(0, qty, len(get_list_item_id))
     else:
-      self.inventory.append(self.inventory, new_item)
-      return'''
+      # TODO: something. idk.
+      pass
+    return
 
+  def add_item(self, item) -> None:
+    self.set_item_qty(item, self.inventory[item]+1)
+    return
+  
+  def rmv_item(self, item) -> None:
+    self.set_item_qty(item, self.inventory[item]-1)
+    return
+  
+  
   def the_other_guy(self):
     if self == self.env.Dealer:
       return self.env.Player
     else:
       return self.env.Dealer
 
+
+
+  # Actions
+  def shoot_shotgun(self, tgt):
+    self.env.Shotgun.fire_shotgun(tgt)
+    return
   
-  '''def add_itemset(self, new_items):
-    for i in new_items:
-      if len(self.inventory) >= 8:
-        break
-      else:
-        self.add_item(i)
+  def shoot_enemy(self):
+    self.shoot_shotgun(self.other_guy)
+    return
+  
+  def shoot_self(self):
+    self.shoot_shotgun(self)
+    return
+  
+  def use_item(self, item) -> None:
+    item.use(self, self.env)
+    return
 
-  def update_senses(self, env):
-    if self == env.Dealer:
-      self.enemy_inventory = env.Player.inventory
-    else:
-      self.enemy_inventory = env.Dealer.inventory
 
-    self.shell_array = env.Shotgun.get_shell_array()
-    self.probability = env.Shotgun.calc_probability()'''
 
+  # Decision Logic
   @abstractmethod
   def make_choice(self, env):
     pass
+
 
   def take_turn(self):
     if self.cuffed == True:
@@ -103,9 +155,9 @@ class BuckShot_Actor():
           tgt = self.the_other_guy()
         self.env.Shotgun.fire_shotgun(tgt)
       else:
-        if self.alt_inventory[choice] >= 0:
+        if self.inventory[choice] >= 0:
           get_list_item_id()[choice].use(self, self.env)
-          self.alt_inventory[choice] += -1
+          self.inventory[choice] += -1
 
 
 

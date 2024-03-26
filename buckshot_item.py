@@ -15,6 +15,7 @@ class BuckShot_Item(ABC):
     return self.id
 
 
+
 # Probably unnecessary, but I think having items inherit from
 # 'category' subclasses might allow the AI to better respond to
 # new/unpredictable objects.
@@ -97,6 +98,10 @@ def get_list_item_id():
   return item_id
 
 @classmethod
+def get_item_id_size():
+  return len(item_id)
+
+@classmethod
 def count_items(itemset) -> list:
   counter = list()
 
@@ -126,10 +131,12 @@ def gen_itemset(number) -> list:
 def gen_alt_itemset(actor, number):
   for L in range(number):
 
+    x = randint(0, get_item_id_size-1)
+
     # TODO: Generalize this to all no-no items.
-    while (x == 0) and (actor.alt_inventory[x] >= 2):
-      x = randint(0, len(item_id)-1)
+    while (x == 0) and (actor.get_itemcount(x) >= 2):
+      x = randint(0, get_item_id_size-1)
     
-    if sum(actor.alt_inventory) >= 8:
+    if (actor.get_inventory_size == actor.get_inventory_max):
       break
-    actor.alt_inventory[x] += 1
+    actor.add_item(x)
