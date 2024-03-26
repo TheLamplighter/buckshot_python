@@ -18,6 +18,7 @@ class BuckShot_Item(ABC):
     return self.id
 
 
+
 # Probably unnecessary, but I think having items inherit from
 # 'category' subclasses might allow the AI to better respond to
 # new/unpredictable objects.
@@ -45,8 +46,8 @@ class Cigarrette(Healing_Item):
   def use(actor, env):
     actor.heal_damage(1)
 
-  def check_invalid(actor):
-    if actor.alt_inventory[id] >= 2:
+  def check_invalid(self, actor):
+    if actor.get_itemcount(self.id) >= 2:
       return True
     else:
       return False
@@ -59,10 +60,8 @@ class Handcuffs(Debuff_Item):
     pass
 
   def use(actor, env):
-    if (actor == env.Dealer):
-      Handcuffs.cuff(env.Player)
-    else:
-      Handcuffs.cuff(env.Dealer)
+    Handcuffs.cuff(actor.other_guy)
+    return
 
 class Handsaw(Damage_Item):
   def __init__(self):
@@ -106,13 +105,8 @@ def get_list_item_id():
   return item_id
 
 @classmethod
-def count_items(itemset) -> list:
-  counter = list()
-
-  for L in len(item_id):
-    counter.append(itemset.count(item_id[L]))
-
-  return counter
+def get_item_id_size():
+  return len(item_id)
 
 
 def item_by_id(id) -> object:
@@ -134,10 +128,11 @@ def gen_itemset(number) -> list:
 @classmethod
 def gen_alt_itemset(actor, number):
   for L in range(number):
+    x = randint(0, get_item_id_size-1)
 
     while (item_id[x].check_invalid(actor)):
-      x = randint(0, len(item_id)-1)
+      x = randint(0, get_item_id_size-1)
     
-    if sum(actor.alt_inventory) >= 8:
+    if (actor.get_inventory_size == actor.get_inventory_max):
       break
-    actor.alt_inventory[x] += 1
+    actor.add_item(x)
