@@ -11,8 +11,8 @@ class BuckShot_Item(ABC):
   def use(actor, env):
     pass
 
-  def check_invalid(actor):
-    return False
+  def check_valid(actor):
+    return True
   
   def get_id(self):
     return self.id
@@ -46,18 +46,24 @@ class Cigarrette(Healing_Item):
   def use(actor, env):
     actor.heal_damage(1)
 
-  def check_invalid(self, actor):
+  def check_valid(self, actor):
     if actor.get_itemcount(self.id) >= 2:
-      return True
-    else:
       return False
+    else:
+      return True
 
 class Handcuffs(Debuff_Item):
   def __init__(self):
     self.id = 1
 
+  def check_valid(actor):
+    if (actor.the_other_guy().cuffed()):
+      return False
+    return True
+
   def cuff(tgt):
-    pass
+    tgt.set_cuffed()
+    return
 
   def use(actor, env):
     Handcuffs.cuff(actor.other_guy)
@@ -69,7 +75,7 @@ class Handsaw(Damage_Item):
 
   def use(actor, env):
     env.Shotgun.dmg = 2
-  pass
+    return
 
 class Spyglass(Info_Item):
   def __init__(self):
@@ -77,7 +83,7 @@ class Spyglass(Info_Item):
 
   def use(actor, env):
     actor.probability = env.Shotgun.current_bullet()
-  pass
+    return
 
 class Beer(Info_Item):
   def __init__(self):
@@ -85,7 +91,7 @@ class Beer(Info_Item):
 
   def use(actor, env):
     env.Shotgun.eject_shell()
-  pass
+    return
 
 
 # THIS is where all the Item IDs are stored.

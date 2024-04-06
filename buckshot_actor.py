@@ -78,6 +78,14 @@ class BuckShot_Actor():
     self.set_cur_health(self.cur_health + heal)
     return
   
+  def set_cuffed(self) -> None:
+    self.cuffed = True
+    return
+  
+  def set_uncuffed(self) -> None:
+    self.cuffed = False
+    return
+  
 
   def set_env(self, env) -> None:
     self.env = env
@@ -139,8 +147,8 @@ class BuckShot_Actor():
 
 
   def take_turn(self):
-    if self.cuffed == True:
-      self.cuffed = False
+    if self.cuffed:
+      self.set_uncuffed()
       return
 
     choice = -5
