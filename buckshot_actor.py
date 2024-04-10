@@ -59,6 +59,12 @@ class BuckShot_Actor():
   def get_cuffed_status(self) -> bool:
     return self.cuffed
   
+  def the_other_guy(self):
+    if self == self.env.Dealer:
+      return self.env.Player
+    else:
+      return self.env.Dealer
+  
 
 
   #Setters
@@ -111,13 +117,6 @@ class BuckShot_Actor():
   def rmv_item(self, item) -> None:
     self.set_item_qty(item, self.inventory[item]-1)
     return
-  
-  
-  def the_other_guy(self):
-    if self == self.env.Dealer:
-      return self.env.Player
-    else:
-      return self.env.Dealer
 
 
 
