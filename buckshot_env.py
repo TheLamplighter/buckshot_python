@@ -30,8 +30,8 @@ class Environment:
 
 
   def round(self) -> None:
-    gen_alt_itemset(self.Player, 4)
-    gen_alt_itemset(self.Dealer, 4)
+    self.Player.inventory.get_item_load()
+    self.Dealer.inventory.get_item_load()
     self.Shotgun.gen_shell_array()
 
     while(self.Shotgun.shotty_empty() == False):

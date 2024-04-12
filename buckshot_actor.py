@@ -1,14 +1,17 @@
 from abc import ABC, abstractmethod
+from buckshot_inventory import BuckShot_Inventory
+from buckshot_item import item_id
+from copy import deepcopy
 from numpy import clip
-from buckshot_item import get_list_item_id
 
 class BuckShot_Actor():
   def __init__(self, max_health=2) -> None:
     # Essential Stats
     self.max_health = max_health
     self.cur_health = max_health
+
     self.max_inventory = 8
-    self.inventory = [0]*len(get_list_item_id())
+    self.inventory = BuckShot_Inventory(self, self.max_inventory)
     
     # Senses
     self.env = object
@@ -27,23 +30,8 @@ class BuckShot_Actor():
   
   def get_hp_percent(self) -> int:
     per = self.cur_health / self.max_health
-    return per*100
-  
+    return per*100  
 
-  def get_inventory(self) -> list:
-    return self.inventory
-  
-  def get_inventory_max(self) -> int:
-    return self.max_inventory
-  
-  def get_inventory_size(self) -> int:
-    return sum(self.inventory)
-  
-  def get_itemcount(self, item_index) -> int:
-    return self.inventory[item_index]
-  
-  def has_item(self, item_index) -> bool:
-    return (self.get_itemcount(item_index) > 0)
   
 
   def get_env(self) -> object:
@@ -97,32 +85,25 @@ class BuckShot_Actor():
     self.env = env
     return
 
+  def add_item(self, item) -> None:
+    self.inventory.add(item)
+
+  def remove_item(self, item) -> None:
+    self.inventory.remove(item)
+
+  def count_item(self, item) -> int:
+    self.inventory.count_item(item)
+
+  def has_item(self, item) -> bool:
+    self.inventory.has_item(item)
 
   def clear_inventory(self) -> None:
-    self.inventory = [0]*len(get_list_item_id)
-    return
-
-  def set_item_qty(self, item, qty) -> None:
-    if clip(0, item, len(self.inventory)-1) == item:
-      self.inventory[item] = clip(0, qty, len(get_list_item_id))
-    else:
-      # TODO: something. idk.
-      pass
-    return
-
-  def add_item(self, item) -> None:
-    self.set_item_qty(item, self.inventory[item]+1)
-    return
-  
-  def rmv_item(self, item) -> None:
-    self.set_item_qty(item, self.inventory[item]-1)
-    return
-
+    self.inventory.clear()
 
 
   # Actions
   def shoot_shotgun(self, tgt):
-    self.env.Shotgun.fire_shotgun(tgt)
+    self.get_shotgun.fire_shotgun(tgt)
     return
   
   def shoot_enemy(self):
@@ -163,7 +144,7 @@ class BuckShot_Actor():
         self.env.Shotgun.fire_shotgun(tgt)
       else:
         if self.inventory[choice] >= 0:
-          get_list_item_id()[choice].use(self, self.env)
+          item_id()[choice].use(self, self.env)
           self.inventory[choice] += -1
 
 

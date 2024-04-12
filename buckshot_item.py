@@ -7,6 +7,9 @@ class BuckShot_Item(ABC):
   def __init__(self) -> None:
     self.id = -1
 
+  def __eq__(self, other) -> bool:
+    return type(self) == type(other)
+
   @abstractmethod
   def use(actor, env):
     pass
@@ -107,38 +110,9 @@ item_id = list(
   )
 
 @classmethod
-def get_list_item_id():
+def item_id() -> list:
   return item_id
 
 @classmethod
-def get_item_id_size():
+def item_id_size():
   return len(item_id)
-
-
-def item_by_id(id) -> object:
-  return deepcopy(item_id[id])
-
-def gen_item() -> object:
-  rng = randint(0, len(item_id)-1)
-  return item_by_id(rng)
-
-@classmethod
-def gen_itemset(number) -> list:
-  itemset = list()
-
-  for L in range(number):
-    itemset.append(gen_item())
-
-  return itemset
-
-@classmethod
-def gen_alt_itemset(actor, number):
-  for L in range(number):
-    x = randint(0, get_item_id_size-1)
-
-    while (item_id[x].check_invalid(actor)):
-      x = randint(0, get_item_id_size-1)
-    
-    if (actor.get_inventory_size == actor.get_inventory_max):
-      break
-    actor.add_item(x)

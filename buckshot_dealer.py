@@ -1,8 +1,16 @@
 from buckshot_actor import BuckShot_Actor
 from random import randint
+from buckshot_item import get_list_item_id
 
 class Dealer(BuckShot_Actor):
-  the_knower = False
+  def __init__(self, max_health=2) -> None:
+    super().__init__(max_health)
+    self.alt_inventory = []*(self.max_inventory)
+
+    
+
+
+
 
   def shoot_random():
     coin_flip = randint(0, 1)
@@ -24,4 +32,14 @@ class Dealer(BuckShot_Actor):
 
 
   def make_choice(self, env) -> int:
+    choice = randint(0, len(get_list_item_id))
+
+
+
+
+
+    if(self.does_he_know or self.used_item[3]):
+      pass
+    else:
+      pass
     pass
