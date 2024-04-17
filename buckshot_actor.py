@@ -18,6 +18,7 @@ class BuckShot_Actor():
     self.probability = 0.5
     self.cuffed = False
     self.other_guy = object
+    self.knower = False
   
 
 
@@ -104,6 +105,7 @@ class BuckShot_Actor():
   # Actions
   def shoot_shotgun(self, tgt):
     self.get_shotgun.fire_shotgun(tgt)
+    self.knower = False
     return
   
   def shoot_enemy(self):
@@ -137,9 +139,9 @@ class BuckShot_Actor():
       choice = self.make_choice()
       
       if choice in {-1, -2}:
-        if choice == -1:
-          tgt = self
         if choice == -2:
+          tgt = self
+        if choice == -1:
           tgt = self.the_other_guy()
         self.env.Shotgun.fire_shotgun(tgt)
       else:

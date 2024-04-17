@@ -86,6 +86,7 @@ class Spyglass(Info_Item):
 
   def use(actor, env):
     actor.probability = env.Shotgun.current_bullet()
+    actor.knower = True
     return
 
 class Beer(Info_Item):
@@ -94,6 +95,7 @@ class Beer(Info_Item):
 
   def use(actor, env):
     env.Shotgun.eject_shell()
+    actor.knower = False
     return
 
 
