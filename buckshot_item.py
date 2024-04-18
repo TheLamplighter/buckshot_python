@@ -16,6 +16,9 @@ class BuckShot_Item(ABC):
 
   def check_valid(actor):
     return True
+
+  def check_usable(actor, ):
+    return True
   
   def get_id(self):
     return self.id
@@ -54,6 +57,12 @@ class Cigarrette(Healing_Item):
       return False
     else:
       return True
+    
+    def check_usable(self, actor):
+      if (actor.get_cur_health() < actor.get_max_health()):
+        return True
+      else:
+        return False
 
 class Handcuffs(Debuff_Item):
   def __init__(self):
@@ -71,6 +80,12 @@ class Handcuffs(Debuff_Item):
   def use(actor, env):
     Handcuffs.cuff(actor.other_guy)
     return
+  
+  def check_usable(actor, env):
+    if(actor.other_guy.cuffed):
+      return False
+    else:
+      return True
 
 class Handsaw(Damage_Item):
   def __init__(self):
@@ -79,6 +94,12 @@ class Handsaw(Damage_Item):
   def use(actor, env):
     env.Shotgun.dmg = 2
     return
+  
+  def check_usable(actor, env):
+    if env.Shotgun.dmg == 2:
+      return False
+    else:
+      return True
 
 class Spyglass(Info_Item):
   def __init__(self):
@@ -88,6 +109,9 @@ class Spyglass(Info_Item):
     actor.probability = env.Shotgun.current_bullet()
     actor.knower = True
     return
+  
+  def check_usable(actor, env):
+    pass
 
 class Beer(Info_Item):
   def __init__(self):
