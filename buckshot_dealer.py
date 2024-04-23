@@ -70,6 +70,7 @@ class Dealer(BuckShot_Actor):
     if(self.item_phase == False):
       choice = self.shoot_already()
       self.item_phase = True
+      self.stop_knowing
 
     return choice
 

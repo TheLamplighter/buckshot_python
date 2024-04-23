@@ -24,9 +24,9 @@ class Environment:
 
 
   #Game Logic Methods
-  def turn(actor) -> None:
+  def turn(self, actor) -> None:
     actor.take_turn()
-    actor.env.Shotgun.dmg = 1
+    self.Shotgun.dmg = 1
 
 
   def round(self) -> None:

@@ -29,7 +29,7 @@ class BuckShot_Actor():
   def get_cur_health(self) -> int:
     return self.cur_health
   
-  def get_hp_percent(self) -> int:
+  def get_hp_percent(self) -> int: #Is this necessary?
     per = self.cur_health / self.max_health
     return per*100  
 
@@ -117,7 +117,7 @@ class BuckShot_Actor():
     return
   
   def use_item(self, item) -> None:
-    item.use(self, self.env)
+    item_id()[item].use(self, self.env)
     return
 
 
@@ -140,13 +140,16 @@ class BuckShot_Actor():
       
       if choice in {-1, -2}:
         if choice == -2:
-          tgt = self
+          self.shoot_self
         if choice == -1:
-          tgt = self.the_other_guy()
-        self.env.Shotgun.fire_shotgun(tgt)
+          self.shoot_enemy
       else:
         if self.inventory[choice] >= 0:
-          item_id()[choice].use(self, self.env)
+          self.use_item(choice)
+
+          # TODO: Uncouple this. It sucks.
+          # Actually redo the entire item.use thing.
+          # (Because it sucks.)
           self.inventory[choice] += -1
 
 
