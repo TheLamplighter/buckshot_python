@@ -111,7 +111,7 @@ class Spyglass(Info_Item):
     return
   
   def check_usable(actor, env):
-    pass
+    return not actor.knower
 
 class Beer(Info_Item):
   def __init__(self):

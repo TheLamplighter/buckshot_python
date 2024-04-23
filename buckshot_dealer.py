@@ -9,7 +9,6 @@ class Dealer(BuckShot_Actor):
 
     self.current_slot = 0
     self.item_phase = True
-    self.knower = False
 
   
   def stop_knowing(self):
