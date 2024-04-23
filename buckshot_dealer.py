@@ -24,6 +24,14 @@ class Dealer(BuckShot_Actor):
     coin_flip = randint(0, 1)
     return coin_flip -2
   
+  def shoot_already(self) -> int:
+    if(self.does_he_know):
+      choice = self.shoot_correct
+    else:
+      choice = self.shoot_random
+    return choice
+
+  
   def full_health(self) -> bool:
     if self.cur_health == self.max_health:
       return True
@@ -40,20 +48,28 @@ class Dealer(BuckShot_Actor):
 
 
   def make_choice(self, env) -> int:
-
     choice = -5
 
-    while(self.item_phase and (self.current_slot < self.inventory.size)):
-      slot = self.inventory.itemslot(self.current_slot)
-      
-      # Item phase logic
+    slot = self.inventory.itemslot(self.current_slot)
 
-    else:
-      if(self.does_he_know):
-        choice = self.shoot_correct
+    if(self.item_phase):
+      while(self.current_slot < self.max_inventory):
+        slot = self.inventory.itemslot(self.current_slot)
+        self.current_slot += 1
+        
+        if(slot == None) or (slot.check_usable() == False):
+          continue
+
+      if(slot == None) or (slot.check_usable() == False):
+        self.item_phase = False
+        self.current_slot = 0
       else:
-        choice = self.shoot_random
+        choice = slot.get_id()
+
+
+    if(self.item_phase == False):
+      choice = self.shoot_already()
       self.item_phase = True
-  
+
     return choice
 
