@@ -29,8 +29,13 @@ class BuckShot_Actor():
   def get_cur_health(self) -> int:
     return self.cur_health
   
+  def is_full_health(self) -> bool:
+    if self.get_cur_health == self.get_max_health:
+      return True
+    return False
+  
   def get_hp_percent(self) -> int: #Is this necessary?
-    per = self.cur_health / self.max_health
+    per = self.get_cur_health / self.get_max_health
     return per*100  
 
   
@@ -45,9 +50,18 @@ class BuckShot_Actor():
     return self.env.Shotgun
   
 
+  def does_he_know(self, env) -> bool:
+    count = env.Shotgun.get_shell_count()
+
+    if count == 1:
+      return True
+    else:
+      return self.knower
+
   def get_cuffed_status(self) -> bool:
     return self.cuffed
   
+
   def the_other_guy(self):
     if self == self.env.Dealer:
       return self.env.Player
@@ -73,6 +87,7 @@ class BuckShot_Actor():
     self.set_cur_health(self.cur_health + heal)
     return
   
+  
   def set_cuffed(self) -> None:
     self.cuffed = True
     return
@@ -82,9 +97,17 @@ class BuckShot_Actor():
     return
   
 
+  def stop_knowing(self):
+    self.knower = False
+
+  def start_knowing(self):
+    self.knower = True
+  
+
   def set_env(self, env) -> None:
     self.env = env
     return
+  
 
   def add_item(self, item) -> None:
     self.inventory.add(item)
@@ -100,6 +123,7 @@ class BuckShot_Actor():
 
   def clear_inventory(self) -> None:
     self.inventory.clear()
+
 
 
   # Actions
@@ -135,6 +159,7 @@ class BuckShot_Actor():
 
     choice = -5
 
+    # TODO: Turn this into a Do-While for readability (Maybe?)
     while(choice not in {-1, -2}):
       choice = self.make_choice()
       
@@ -144,13 +169,8 @@ class BuckShot_Actor():
         if choice == -1:
           self.shoot_enemy
       else:
-        if self.inventory[choice] >= 0:
+        if self.inventory.has_item(choice):
           self.use_item(choice)
-
-          # TODO: Uncouple this. It sucks.
-          # Actually redo the entire item.use thing.
-          # (Because it sucks.)
-          self.inventory[choice] += -1
 
 
 

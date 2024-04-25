@@ -10,12 +10,6 @@ class Dealer(BuckShot_Actor):
     self.current_slot = 0
     self.item_phase = True
 
-  
-  def stop_knowing(self):
-    self.knower = False
-
-  def start_knowing(self):
-    self.knower = True
 
   def shoot_correct(self) -> int:
     return self.env.Shotgun.current_bullet()-2
@@ -30,22 +24,7 @@ class Dealer(BuckShot_Actor):
     else:
       choice = self.shoot_random
     return choice
-
   
-  def full_health(self) -> bool:
-    if self.cur_health == self.max_health:
-      return True
-    return False
-  
-  def does_he_know(self, env) -> bool:
-    count = env.Shotgun.get_shell_count()
-
-    if count == 1:
-      return True
-    else:
-      return self.knower
-
-
 
   def make_choice(self, env) -> int:
     choice = -5

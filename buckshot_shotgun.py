@@ -33,6 +33,7 @@ class BuckShot_Shotgun:
   def current_bullet(self) -> int:
     return self.get_shell_array()[0]
 
+
   def fire_shotgun(self, tgt) -> None:
     if (self.current_bullet() == 1):
       tgt.take_damage(self.get_damage())

@@ -59,6 +59,7 @@ class BuckShot_Inventory():
   def place_item(self, item, slot) -> None:
     self.inventory[slot] = self.item_by_id(item)
 
+
   def add(self, item) -> None:
     slot = self.find(None)
     if(self.size < self.max_size) and (slot >= 0):

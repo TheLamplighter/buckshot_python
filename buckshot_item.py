@@ -10,14 +10,13 @@ class BuckShot_Item(ABC):
   def __eq__(self, other) -> bool:
     return type(self) == type(other)
 
-  @abstractmethod
-  def use(actor, env):
-    pass
+  def use(self, actor, env):
+    actor.remove_item(self.get_id)
 
-  def check_valid(actor):
+  def check_usable(self, actor, env):
     return True
-
-  def check_usable(actor, ):
+  
+  def check_valid(self, actor, env):
     return True
   
   def get_id(self):
@@ -49,78 +48,93 @@ class Cigarrette(Healing_Item):
   def __init__(self):
     self.id = 0
   
-  def use(actor, env):
+  def use(self, actor, env):
+    super().use(self, actor, env)
     actor.heal_damage(1)
+    return
+  
+  def check_usable(self, actor, env):
+    if (actor.get_cur_health() < actor.get_max_health()):
+      return True
+    else:
+      return False
 
-  def check_valid(self, actor):
+  def check_valid(self, actor, env):
     if actor.get_itemcount(self.id) >= 2:
       return False
     else:
       return True
-    
-    def check_usable(self, actor):
-      if (actor.get_cur_health() < actor.get_max_health()):
-        return True
-      else:
-        return False
+
 
 class Handcuffs(Debuff_Item):
   def __init__(self):
     self.id = 1
 
-  def check_valid(actor):
-    if (actor.the_other_guy().cuffed()):
+  def use(self, actor, env):
+    super().use(self, actor, env)
+    Handcuffs.cuff(actor.other_guy)
+    return
+  
+  def check_usable(self, actor, env):
+    if(actor.other_guy.cuffed):
       return False
-    return True
+    else:
+      return True
+    
+  def check_valid(self, actor, env):
+    return super().check_valid(self, actor, env)
 
   def cuff(tgt):
     tgt.set_cuffed()
     return
 
-  def use(actor, env):
-    Handcuffs.cuff(actor.other_guy)
-    return
-  
-  def check_usable(actor, env):
-    if(actor.other_guy.cuffed):
-      return False
-    else:
-      return True
 
 class Handsaw(Damage_Item):
   def __init__(self):
     self.id = 2
 
-  def use(actor, env):
+  def use(self, actor, env):
+    super().use(self, actor, env)
     env.Shotgun.dmg = 2
     return
   
-  def check_usable(actor, env):
+  def check_usable(self, actor, env):
     if env.Shotgun.dmg == 2:
       return False
     else:
       return True
 
+
 class Spyglass(Info_Item):
   def __init__(self):
     self.id = 3
 
-  def use(actor, env):
+  def use(self, actor, env):
+    super().use(self, actor, env)
     actor.probability = env.Shotgun.current_bullet()
-    actor.knower = True
+    actor.start_knowing()
     return
   
-  def check_usable(actor, env):
-    return not actor.knower
+  def check_usable(self, actor, env):
+    return not actor.does_he_know()
+
 
 class Beer(Info_Item):
   def __init__(self):
     self.id = 4
 
-  def use(actor, env):
+  def use(self, actor, env):
+    super().use(self, actor, env)
     env.Shotgun.eject_shell()
-    actor.knower = False
+    actor.stop_knowing()
     return
+  
+  def check_usable(self, actor, env):
+    return super().check_usable(self, actor, env)
+  
+  def check_valid(self, actor, env):
+    return super().check_valid(self, actor, env)
+
 
 
 # THIS is where all the Item IDs are stored.
@@ -128,12 +142,13 @@ class Beer(Info_Item):
 # and add the object to this list.
 # ...It would probably be smart to move this to another file later.
 item_id = list(
-    Cigarrette(), #0 
-    Handcuffs(), #1
-    Handsaw(), #2
-    Spyglass(), #3
-    Beer(), #4
-  )
+  Cigarrette(), #0 
+  Handcuffs(), #1
+  Handsaw(), #2
+  Spyglass(), #3
+  Beer(), #4
+)
+
 
 @classmethod
 def item_id() -> list:
