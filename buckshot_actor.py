@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 from buckshot_inventory import BuckShot_Inventory
-from buckshot_item import item_id
+from buckshot_shotgun import BuckShot_Shotgun
+from buckshot_actor import BuckShot_Actor
+from buckshot_env import BuckShot_Environment
+from buckshot_item import item_id, BuckShot_Item
 from copy import deepcopy
 from numpy import clip
 
@@ -40,18 +43,25 @@ class BuckShot_Actor():
 
   
 
-  def get_env(self) -> object:
+  def get_env(self) -> BuckShot_Environment:
     return self.env
   
-  def get_other_guy(self) -> object:
+  def get_other_guy(self) -> BuckShot_Actor:
     return self.other_guy
   
-  def get_shotgun(self) -> object:
+  def get_shotgun(self) -> BuckShot_Shotgun:
     return self.env.Shotgun
   
 
-  def does_he_know(self, env) -> bool:
-    count = env.Shotgun.get_shell_count()
+  def count_item(self, item) -> int:
+    self.inventory.count_item(item)
+
+  def has_item(self, item) -> bool:
+    self.inventory.has_item(item)
+  
+
+  def does_he_know(self) -> bool:
+    count = self.get_shotgun.get_shell_count()
 
     if count == 1:
       return True
@@ -62,39 +72,33 @@ class BuckShot_Actor():
     return self.cuffed
   
 
-  def the_other_guy(self):
-    if self == self.env.Dealer:
-      return self.env.Player
+  def the_other_guy(self, env: BuckShot_Environment) -> BuckShot_Actor:
+    if self == env.get_dealer:
+      return env.get_player
     else:
-      return self.env.Dealer
+      return env.get_dealer
   
 
 
   #Setters
   def set_max_health(self, value) -> None:
     self.max_health = value
-    return
   
   def set_cur_health(self, value) -> None:
     self.cur_health = clip(0, value, self.max_health)
-    return
 
   def take_damage(self, dmg) -> None:
     self.set_cur_health(self.cur_health - dmg)
-    return
   
   def heal_damage(self, heal) -> None:
     self.set_cur_health(self.cur_health + heal)
-    return
   
   
   def set_cuffed(self) -> None:
     self.cuffed = True
-    return
   
   def set_uncuffed(self) -> None:
     self.cuffed = False
-    return
   
 
   def stop_knowing(self):
@@ -106,7 +110,6 @@ class BuckShot_Actor():
 
   def set_env(self, env) -> None:
     self.env = env
-    return
   
 
   def add_item(self, item) -> None:
@@ -114,12 +117,6 @@ class BuckShot_Actor():
 
   def remove_item(self, item) -> None:
     self.inventory.remove(item)
-
-  def count_item(self, item) -> int:
-    self.inventory.count_item(item)
-
-  def has_item(self, item) -> bool:
-    self.inventory.has_item(item)
 
   def clear_inventory(self) -> None:
     self.inventory.clear()
@@ -130,36 +127,31 @@ class BuckShot_Actor():
   def shoot_shotgun(self, tgt):
     self.get_shotgun.fire_shotgun(tgt)
     self.knower = False
-    return
   
   def shoot_enemy(self):
     self.shoot_shotgun(self.other_guy)
-    return
   
   def shoot_self(self):
     self.shoot_shotgun(self)
-    return
   
   def use_item(self, item) -> None:
     item_id()[item].use(self, self.env)
-    return
 
 
 
   # Decision Logic
   @abstractmethod
-  def make_choice(self, env):
+  def make_choice(self, env) -> None:
     pass
 
 
-  def take_turn(self):
+  def take_turn(self) -> None:
     if self.cuffed:
       self.set_uncuffed()
       return
 
     choice = -5
 
-    # TODO: Turn this into a Do-While for readability (Maybe?)
     while(choice not in {-1, -2}):
       choice = self.make_choice()
       
@@ -171,7 +163,3 @@ class BuckShot_Actor():
       else:
         if self.inventory.has_item(choice):
           self.use_item(choice)
-
-
-
-      

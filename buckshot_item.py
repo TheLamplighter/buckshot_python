@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from random import randint
 from copy import deepcopy
+from buckshot_actor import BuckShot_Actor
+from buckshot_env import BuckShot_Environment
 
 class BuckShot_Item(ABC):
   @abstractmethod
@@ -10,13 +12,13 @@ class BuckShot_Item(ABC):
   def __eq__(self, other) -> bool:
     return type(self) == type(other)
 
-  def use(self, actor, env):
+  def use(self, actor: BuckShot_Actor, env):
     actor.remove_item(self.get_id)
 
-  def check_usable(self, actor, env):
+  def check_usable(self, actor: BuckShot_Actor, env: BuckShot_Environment):
     return True
   
-  def check_valid(self, actor, env):
+  def check_valid(self, actor: BuckShot_Actor, env: BuckShot_Environment):
     return True
   
   def get_id(self):
@@ -51,7 +53,6 @@ class Cigarrette(Healing_Item):
   def use(self, actor, env):
     super().use(self, actor, env)
     actor.heal_damage(1)
-    return
   
   def check_usable(self, actor, env):
     if (actor.get_cur_health() < actor.get_max_health()):
@@ -60,7 +61,7 @@ class Cigarrette(Healing_Item):
       return False
 
   def check_valid(self, actor, env):
-    if actor.get_itemcount(self.id) >= 2:
+    if actor.count_item(self.id) >= 2:
       return False
     else:
       return True
@@ -84,7 +85,7 @@ class Handcuffs(Debuff_Item):
   def check_valid(self, actor, env):
     return super().check_valid(self, actor, env)
 
-  def cuff(tgt):
+  def cuff(tgt: BuckShot_Actor):
     tgt.set_cuffed()
     return
 

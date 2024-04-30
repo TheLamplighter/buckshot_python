@@ -1,6 +1,7 @@
 from buckshot_actor import BuckShot_Actor
 from random import randint
 from buckshot_item import get_list_item_id
+from buckshot_env import BuckShot_Environment
 
 class Dealer(BuckShot_Actor):
   def __init__(self, max_health=2) -> None:
@@ -12,7 +13,7 @@ class Dealer(BuckShot_Actor):
 
 
   def shoot_correct(self) -> int:
-    return self.env.Shotgun.current_bullet()-2
+    return self.get_shotgun.current_bullet()-2
 
   def shoot_random() -> int:
     coin_flip = randint(0, 1)
@@ -26,7 +27,7 @@ class Dealer(BuckShot_Actor):
     return choice
   
 
-  def make_choice(self, env) -> int:
+  def make_choice(self, env: BuckShot_Environment) -> int:
     choice = -5
 
     slot = self.inventory.itemslot(self.current_slot)

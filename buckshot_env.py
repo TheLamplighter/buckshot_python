@@ -3,7 +3,7 @@ from buckshot_shotgun import BuckShot_Shotgun
 from buckshot_item import gen_alt_itemset
 from random import randint
 
-class Environment:
+class BuckShot_Environment:
   def __init__(self, stage=1, round=0, turn=0) -> None:
     self.stage = stage
     self.round = round
@@ -12,6 +12,15 @@ class Environment:
   Shotgun = BuckShot_Shotgun()
   Dealer = BuckShot_Actor()
   Player = BuckShot_Actor()
+
+  def get_player(self) -> BuckShot_Actor:
+    return self.Player
+
+  def get_dealer(self) -> BuckShot_Actor:
+    return self.Dealer
+
+  def get_shotgun(self) -> BuckShot_Shotgun:
+    return self.Shotgun
 
   # Probably Unnecessary, but I don't
   # Know how Python works.
@@ -24,7 +33,7 @@ class Environment:
 
 
   #Game Logic Methods
-  def turn(self, actor) -> None:
+  def turn(self, actor: BuckShot_Actor) -> None:
     actor.take_turn()
     self.Shotgun.dmg = 1
 
@@ -44,7 +53,7 @@ class Environment:
     pass
 
 
-  def stage(env, max_hp=2, threshold=0) -> None:
+  def stage(self, max_hp=2, threshold=0) -> None:
     pass
 
 
