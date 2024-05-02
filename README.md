@@ -11,11 +11,11 @@ If you are Mike Klubnika and you don't like this, please [contact me](mailto:the
 ## TO DO:
 - [X] Working Shotgun
 - [ ] Win and Loss conditions
-- [ ] Functioning Actions / Controls
+- [X] Functioning Actions / Controls
 - [ ] Functioning Turns and Rounds
 - [X] RNG implementation (Items and Bullets)
-- [ ] Working Items
-- [ ] Dealer AI
+- [X] Working Items
+- [X] Dealer AI
 
 ### POST-FINISH:
 - [ ] Runtime Optimization
