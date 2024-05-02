@@ -1,12 +1,11 @@
 from buckshot_actor import BuckShot_Actor
 from random import randint
-from buckshot_item import get_list_item_id
+from buckshot_item import item_id
 from buckshot_env import BuckShot_Environment
 
 class Dealer(BuckShot_Actor):
   def __init__(self, max_health=2) -> None:
     super().__init__(max_health)
-    self.alt_inventory = []*(self.max_inventory)
 
     self.current_slot = 0
     self.item_phase = True

@@ -18,9 +18,9 @@ class BuckShot_Actor():
     
     # Senses
     self.env = object
+    self.other_guy = object
     self.probability = 0.5
     self.cuffed = False
-    self.other_guy = object
     self.knower = False
   
 
@@ -36,6 +36,9 @@ class BuckShot_Actor():
     if self.get_cur_health == self.get_max_health:
       return True
     return False
+  
+  def is_dead(self) -> bool:
+    return self.get_cur_health <= 0
   
   def get_hp_percent(self) -> int: #Is this necessary?
     per = self.get_cur_health / self.get_max_health
@@ -152,14 +155,19 @@ class BuckShot_Actor():
 
     choice = -5
 
-    while(choice not in {-1, -2}):
+    while(choice not in {-1, -2} and (not self.get_shotgun.shotty_empty())):
       choice = self.make_choice()
+
+      if(choice >= len(item_id)) or (choice < -2):
+        continue
       
-      if choice in {-1, -2}:
-        if choice == -2:
+      if choice in {-1, -2}: # Reach Heaven Through Violence
+        if choice == -2:     # Heaven or Hell
           self.shoot_self
         if choice == -1:
           self.shoot_enemy
+        return
       else:
         if self.inventory.has_item(choice):
           self.use_item(choice)
+        continue

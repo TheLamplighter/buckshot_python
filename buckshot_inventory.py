@@ -84,7 +84,7 @@ class BuckShot_Inventory():
     for L in range(number):
       x = randint(0, item_id_size-1)
 
-      while (item_id[x].check_invalid(self.actor)):
+      while (not item_id[x].check_valid(self.actor)):
         x = randint(0, item_id_size-1)
       
       if (self.size) == (self.max_size):
