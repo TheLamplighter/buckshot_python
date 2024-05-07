@@ -1,8 +1,12 @@
 from abc import ABC, abstractmethod
 from random import randint
 from copy import deepcopy
+
+#Typing imports
 from buckshot_actor import BuckShot_Actor
 from buckshot_env import BuckShot_Environment
+
+
 
 class BuckShot_Item(ABC):
   @abstractmethod
@@ -11,8 +15,13 @@ class BuckShot_Item(ABC):
 
   def __eq__(self, other) -> bool:
     return type(self) == type(other)
+  
+  
+  def get_id(self):
+    return self.id
+  
 
-  def use(self, actor: BuckShot_Actor, env):
+  def use(self, actor: BuckShot_Actor, env: BuckShot_Environment):
     actor.remove_item(self.get_id)
 
   def check_usable(self, actor: BuckShot_Actor, env: BuckShot_Environment):
@@ -20,9 +29,6 @@ class BuckShot_Item(ABC):
   
   def check_valid(self, actor: BuckShot_Actor, env: BuckShot_Environment):
     return True
-  
-  def get_id(self):
-    return self.id
 
 
 
@@ -55,16 +61,12 @@ class Cigarrette(Healing_Item):
     actor.heal_damage(1)
   
   def check_usable(self, actor, env):
-    if (actor.get_cur_health() < actor.get_max_health()):
-      return True
-    else:
-      return False
+    if (actor.get_cur_health() < actor.get_max_health()): return True
+    else: return False
 
   def check_valid(self, actor, env):
-    if actor.count_item(self.id) >= 2:
-      return False
-    else:
-      return True
+    if actor.count_item(self.id) >= 2: return False
+    else: return True
 
 
 class Handcuffs(Debuff_Item):
@@ -77,10 +79,7 @@ class Handcuffs(Debuff_Item):
     return
   
   def check_usable(self, actor, env):
-    if(actor.other_guy.cuffed):
-      return False
-    else:
-      return True
+    return not actor.get_other_guy.get_cuffed_status
     
   def check_valid(self, actor, env):
     return super().check_valid(self, actor, env)
@@ -100,10 +99,11 @@ class Handsaw(Damage_Item):
     return
   
   def check_usable(self, actor, env):
-    if env.Shotgun.dmg == 2:
-      return False
-    else:
-      return True
+    if env.Shotgun.dmg == 2: return False
+    return True
+
+  def check_valid(self, actor, env):
+    return super().check_valid(self, actor, env)
 
 
 class Spyglass(Info_Item):
@@ -112,12 +112,15 @@ class Spyglass(Info_Item):
 
   def use(self, actor, env):
     super().use(self, actor, env)
-    actor.probability = env.Shotgun.current_bullet()
+    actor.probability = env.Shotgun.current_shell()
     actor.start_knowing()
     return
   
   def check_usable(self, actor, env):
     return not actor.does_he_know()
+  
+  def check_valid(self, actor, env):
+    return super().check_valid(self, actor, env)
 
 
 class Beer(Info_Item):

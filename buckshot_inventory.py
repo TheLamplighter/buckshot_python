@@ -2,11 +2,13 @@ from random import randint
 from buckshot_item import item_id, item_id_size
 from copy import deepcopy
 
+
+
 class BuckShot_Inventory():
   def __init__(self, actor, max_inventory=8) -> None:
     self.actor = actor
-    
     self.max_inventory = max_inventory
+
     self.inventory = [None]*max_inventory
     self.itemcount = [0]*item_id_size
 
@@ -24,8 +26,7 @@ class BuckShot_Inventory():
   
   
   def is_empty(self) -> bool:
-    if self.size > 0:
-      return True
+    if (self.size > 0): return True
     return False
   
   def not_empty(self) -> bool:
@@ -45,8 +46,7 @@ class BuckShot_Inventory():
 
   def find(self, item) -> int:
     for L in range(len(self.inventory)):
-      if self.inventory[L] == item:
-        return L
+      if self.inventory[L] == item: return L
     return -1
   
 
@@ -74,7 +74,7 @@ class BuckShot_Inventory():
 
   def clear(self) -> None:
     self.inventory = [None]*self.max_inventory
-    self.itemcount = [0]*len(item_id)
+    self.itemcount = [0]*item_id_size
     return
   
 
@@ -87,6 +87,5 @@ class BuckShot_Inventory():
       while (not item_id[x].check_valid(self.actor)):
         x = randint(0, item_id_size-1)
       
-      if (self.size) == (self.max_size):
-        break
+      if (self.size == self.max_size): break
       self.add(x)
