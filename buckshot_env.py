@@ -52,14 +52,14 @@ class BuckShot_Environment:
 
 
 
-  #Game Logic Methods
+  # Game Logic Methods
   def turn(self, actor: BuckShot_Actor) -> None:
     actor.take_turn()
     self.Shotgun.dmg = 1
 
 
-  def round(self) -> None: #Loop this.
-    if(self.has_winner): return
+  # Looped by .stage(). New rounds until player wins or dies.
+  def round(self) -> None:
     self.round_up
 
     # New items for everyone, new shotgun array.
@@ -67,10 +67,12 @@ class BuckShot_Environment:
     self.Dealer.inventory.get_item_load(4)
     self.Shotgun.gen_shell_array()
 
-    while(self.Shotgun.shotty_empty() == False):
+    # Alternate turns until one dies or the shotgun runs out
+    while(self.Shotgun.shotty_empty() == False) and (not self.has_winner):
       self.turn(self.get_player)
       if(self.has_winner or self.Shotgun.shotty_empty): break
       self.turn(self.get_dealer)
+    return
 
 
   def stage(self, max_hp=2, threshold=0) -> None:
@@ -78,12 +80,13 @@ class BuckShot_Environment:
     self.stage_up
 
     # Set everything to defaults
-    self.get_dealer.set_max_hp(max_hp), self.get_player.set_max_hp(max_hp)
-    self.get_dealer.to_max_hp(),        self.get_player.to_max_hp()
-    self.get_dealer.clear_inventory(),  self.get_player.clear_inventory()
+    self.get_dealer.set_max_hp(max_hp),       self.get_player.set_max_hp(max_hp)
+    self.get_dealer.set_threshold(threshold), self.get_player.set_threshold(threshold) 
+    self.get_dealer.to_max_hp(),              self.get_player.to_max_hp()
+    self.get_dealer.clear_inventory(),        self.get_player.clear_inventory()
     self.get_shotgun.clear_shell_array()
 
-    #Play rounds until there's a winner
+    # Play rounds until there's a winner
     while(not self.has_winner):
       self.round()
 

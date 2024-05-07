@@ -23,21 +23,24 @@ class Dealer(BuckShot_Actor):
     return coin_flip -2
   
   def shoot_already(self) -> int:
+    # Dealer shoots randomly unless he knows the current shell.
     if(self.does_he_know): choice = self.shoot_correct
     else: choice = self.shoot_random
     return choice
   
 
+  # Dealer AI
+  # He uses every usable item in Itemslot order, then shoots.
+  # He shoots randomly unless he knows the current shell
+  # And he always knows the last shell in a load.
   def make_choice(self, env: BuckShot_Environment) -> int:
-    choice = -5
-
     if(self.item_phase):
-      # Cycle through inventory looking for a usable item
+      # He cycles through inventory looking for a usable item
       while(self.current_slot < self.max_inventory):
         slot = self.inventory.itemslot(self.current_slot)
         self.current_slot += 1
         
-        # Exit loop only when it finds one or runs out of inventory
+        # Exits loop when it finds one or runs out of inventory
         if(slot == None) or (slot.check_usable() == False): continue
         else: break
 
@@ -48,7 +51,7 @@ class Dealer(BuckShot_Actor):
       else: # Otherwise, it'll use that item.
         choice = slot.get_id()
 
-    # Leaving the item phase, it chooses to shoot.
+    # When it leaves the item phase, it chooses to shoot.
     if(self.item_phase == False):
       choice = self.shoot_already()
       self.item_phase = True

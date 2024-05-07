@@ -13,7 +13,7 @@ class BuckShot_Inventory():
     self.itemcount = [0]*item_id_size
 
 
-  #Getters
+  # Getters
   def itemslot(self, slot) -> object:
     return self.inventory[slot]
 
@@ -45,7 +45,7 @@ class BuckShot_Inventory():
   
 
   def find(self, item) -> int:
-    for L in range(len(self.inventory)):
+    for L in range(self.max_inventory):
       if self.inventory[L] == item: return L
     return -1
   
@@ -67,7 +67,7 @@ class BuckShot_Inventory():
       self.itemcount[item] += 1
 
   def remove(self, item) -> None:
-    if(self.not_empty) and (self.has_item(item)):
+    if(self.has_item(item)):
       slot = self.find(item_id[item])
       self.inventory[slot] = None
       self.itemcount[item] += -1
@@ -75,15 +75,16 @@ class BuckShot_Inventory():
   def clear(self) -> None:
     self.inventory = [None]*self.max_inventory
     self.itemcount = [0]*item_id_size
-    return
   
 
 
-  #Itemset Logic --- Kill me.
+  # Itemset Logic --- Kill me.
+  # Randomly generates inventory items
   def get_item_load(self, number) -> None:
     for L in range(number):
       x = randint(0, item_id_size-1)
-
+      
+      # If the item is invalid, generate another one.
       while (not item_id[x].check_valid(self.actor)):
         x = randint(0, item_id_size-1)
       

@@ -30,7 +30,7 @@ class BuckShot_Actor():
   
 
 
-  #Getters
+  # Getters
   def get_max_health(self) -> int:
     return self.max_health
   
@@ -87,7 +87,7 @@ class BuckShot_Actor():
   
 
 
-  #Setters
+  # Setters
   def set_max_health(self, value) -> None:
     self.max_health = value
   
@@ -98,6 +98,8 @@ class BuckShot_Actor():
     self.threshold = value
 
 
+  # Damages 'Defibrilators' first and 'Transfusions' second.
+  # Just like in the game.
   def take_damage(self, dmg) -> None:
     self.set_cur_health(self.get_cur_health - dmg)
     if(self.get_cur_health < 0):
@@ -138,14 +140,14 @@ class BuckShot_Actor():
 
 
   # Actions
-  def shoot_shotgun(self, tgt):
-    self.get_shotgun.fire_shotgun(tgt)
+  def shoot_shotgun(self, tgt) -> int:
     self.stop_knowing
+    return self.get_shotgun.fire_shotgun(tgt)
   
-  def shoot_enemy(self):
+  def shoot_enemy(self) -> int:
     self.shoot_shotgun(self.other_guy)
   
-  def shoot_self(self):
+  def shoot_self(self) -> int:
     self.shoot_shotgun(self)
 
   
@@ -161,6 +163,7 @@ class BuckShot_Actor():
     pass
 
 
+  # Handles actor input, Dealer or Player.
   def take_turn(self) -> None:
     if self.cuffed:
       # If cuffed, skip turn and uncuff.
@@ -170,16 +173,19 @@ class BuckShot_Actor():
     choice = -5
 
     while(choice not in {-1, -2} and (not self.get_shotgun.shotty_empty())):
+      # Gets input from Player/Dealer
       choice = self.make_choice()
 
+      # Makes sure it's correct, just in case
       if(choice >= len(item_id)) or (choice < -2): continue
       
-      if choice in {-1, -2}:
-        if choice == -1: self.shoot_enemy
-        if choice == -2: self.shoot_self
+      if choice in {-1, -2}: # If it's negative, that means 'Shoot'
+        if (choice == -1): self.shoot_enemy
+        if (choice == -2) and (self.shoot_self == 0): continue
+        # Shooting yourself with a blank lets you go again.
         return
-      else:
+      else: # 0 and up means 'Item'
         if self.inventory.has_item(choice):
           self.use_item(choice)
-        # Doesn't end turn if item is used, unless shotgun empties.
+        # Turn doesn't end on item use, unless shotgun empties.
         continue

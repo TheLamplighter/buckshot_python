@@ -20,8 +20,8 @@ class BuckShot_Shotgun:
   def add_shell(self, shell) -> None:
     self.get_shell_array().append(shell)
   
-  def eject_shell(self) -> None:
-    self.get_shell_array().pop(0)
+  def eject_shell(self) -> int:
+    return self.get_shell_array().pop(0)
 
   def clear_shell_array(self) -> None:
     self.get_shell_array = list()
@@ -37,10 +37,10 @@ class BuckShot_Shotgun:
     return self.get_shell_array()[0]
 
 
-  def fire_shotgun(self, tgt) -> None:
+  def fire_shotgun(self, tgt) -> int:
     if (self.current_shell() == 1):
       tgt.take_damage(self.get_damage())
-    self.eject_shell()
+    return self.eject_shell()
 
 
   def calc_probability(self) -> int:
