@@ -2,16 +2,18 @@ from random import randint
 from buckshot_item import item_id, item_id_size
 from copy import deepcopy
 
+
+
 class BuckShot_Inventory():
   def __init__(self, actor, max_inventory=8) -> None:
     self.actor = actor
-    
     self.max_inventory = max_inventory
+
     self.inventory = [None]*max_inventory
     self.itemcount = [0]*item_id_size
 
 
-  #Getters
+  # Getters
   def itemslot(self, slot) -> object:
     return self.inventory[slot]
 
@@ -24,8 +26,7 @@ class BuckShot_Inventory():
   
   
   def is_empty(self) -> bool:
-    if self.size > 0:
-      return True
+    if (self.size > 0): return True
     return False
   
   def not_empty(self) -> bool:
@@ -44,9 +45,8 @@ class BuckShot_Inventory():
   
 
   def find(self, item) -> int:
-    for L in range(len(self.inventory)):
-      if self.inventory[L] == item:
-        return L
+    for L in range(self.max_inventory):
+      if self.inventory[L] == item: return L
     return -1
   
 
@@ -67,26 +67,26 @@ class BuckShot_Inventory():
       self.itemcount[item] += 1
 
   def remove(self, item) -> None:
-    if(self.not_empty) and (self.has_item(item)):
+    if(self.has_item(item)):
       slot = self.find(item_id[item])
       self.inventory[slot] = None
       self.itemcount[item] += -1
 
   def clear(self) -> None:
     self.inventory = [None]*self.max_inventory
-    self.itemcount = [0]*len(item_id)
-    return
+    self.itemcount = [0]*item_id_size
   
 
 
-  #Itemset Logic --- Kill me.
+  # Itemset Logic --- Kill me.
+  # Randomly generates inventory items
   def get_item_load(self, number) -> None:
     for L in range(number):
       x = randint(0, item_id_size-1)
-
-      while (item_id[x].check_invalid(self.actor)):
+      
+      # If the item is invalid, generate another one.
+      while (not item_id[x].check_valid(self.actor)):
         x = randint(0, item_id_size-1)
       
-      if (self.size) == (self.max_size):
-        break
+      if (self.size == self.max_size): break
       self.add(x)
