@@ -1,4 +1,3 @@
-from buckshot_item import gen_alt_itemset
 from random import randint
 from buckshot_actor import BuckShot_Actor
 from buckshot_shotgun import BuckShot_Shotgun
@@ -11,9 +10,9 @@ class BuckShot_Environment:
     self.round_count = round
     self.turn_count = turn
 
-  Shotgun = BuckShot_Shotgun()
-  Dealer = BuckShot_Actor()
-  Player = BuckShot_Actor()
+    self.Shotgun = BuckShot_Shotgun()
+    self.Dealer = BuckShot_Actor()
+    self.Player = BuckShot_Actor()
 
   def get_player(self) -> BuckShot_Actor:
     return self.Player
@@ -101,6 +100,3 @@ class BuckShot_Environment:
       self.stage(randint(2, 4), thresh)
       if(self.check_winner == 0): return False
     return True
-
-
-# Running Logic starts HERE 

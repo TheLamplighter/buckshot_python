@@ -24,7 +24,7 @@ class BuckShot_Shotgun:
     return self.get_shell_array().pop(0)
 
   def clear_shell_array(self) -> None:
-    self.get_shell_array = list()
+    self.get_shell_array = []*8
   
 
   def count_shells(self, x) -> int:
@@ -43,14 +43,13 @@ class BuckShot_Shotgun:
     return self.eject_shell()
 
 
-  def calc_probability(self) -> int:
+  def calc_probability(self) -> float:
     if self.count_shells(1) == 0: 
       return 0
     else:
-      prob = float(
+      return float(
         (self.count_shells(1)) / (self.get_shell_count())
       )
-      return prob*100
 
 
   def gen_shell_array(self) -> None:

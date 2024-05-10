@@ -6,7 +6,7 @@ from buckshot_item import item_id, BuckShot_Item
 
 # Typing Imports
 from buckshot_shotgun import BuckShot_Shotgun
-from buckshot_actor import BuckShot_Actor
+from buckshot_actor import BuckShot_Actor # ??? ??? ???
 from buckshot_env import BuckShot_Environment
 
 
@@ -145,10 +145,10 @@ class BuckShot_Actor():
     return self.get_shotgun.fire_shotgun(tgt)
   
   def shoot_enemy(self) -> int:
-    self.shoot_shotgun(self.other_guy)
+    return self.shoot_shotgun(self.other_guy)
   
   def shoot_self(self) -> int:
-    self.shoot_shotgun(self)
+    return self.shoot_shotgun(self)
 
   
   def use_item(self, item) -> None: # TODO: This is kind of ugly. Have a look.
@@ -185,7 +185,7 @@ class BuckShot_Actor():
         # Shooting yourself with a blank lets you go again.
         return
       else: # 0 and up means 'Item'
-        if self.inventory.has_item(choice):
+        if self.inventory.has_item(choice) and item_id[choice].check_usable():
           self.use_item(choice)
         # Turn doesn't end on item use, unless shotgun empties.
         continue
