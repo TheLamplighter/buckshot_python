@@ -100,26 +100,30 @@ class BuckShot_Actor():
 
   # Damages 'Defibrilators' first and 'Transfusions' second.
   # Just like in the game.
+  # @log_action
   def take_damage(self, dmg) -> None:
     self.set_cur_health(self.get_cur_health - dmg)
     if(self.get_cur_health < 0):
       self.set_threshold(self.get_cur_threshold - self.get_cur_health)
       self.set_cur_health(0)
   
+  # @log_action
   def heal_damage(self, heal) -> None:
     self.set_cur_health(self.cur_health + heal)
   
-  
+  # @log_action
   def set_cuffed(self) -> None:
     self.cuffed = True
   
+  # @log_action
   def set_uncuffed(self) -> None:
     self.cuffed = False
   
-
+  # @log_action
   def stop_knowing(self):
     self.knower = False
 
+  # @log_action
   def start_knowing(self):
     self.knower = True
   
@@ -140,6 +144,7 @@ class BuckShot_Actor():
 
 
   # Actions
+  # @log_action
   def shoot_shotgun(self, tgt) -> int:
     self.stop_knowing
     return self.get_shotgun.fire_shotgun(tgt)
@@ -150,7 +155,7 @@ class BuckShot_Actor():
   def shoot_self(self) -> int:
     return self.shoot_shotgun(self)
 
-  
+  # @log_action
   def use_item(self, item) -> None: # TODO: This is kind of ugly. Have a look.
     item_id[item].use(self, self.env)
 
@@ -158,12 +163,14 @@ class BuckShot_Actor():
 
   # Decision Logic
   @abstractmethod
-  def make_choice(self, env) -> None:
+  # @log_action
+  def make_choice(self, env) -> int:
     # Left to the Player and Dealer classes
     pass
 
 
   # Handles actor input, Dealer or Player.
+  # @log_action
   def take_turn(self) -> None:
     if self.cuffed:
       # If cuffed, skip turn and uncuff.

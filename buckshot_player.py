@@ -10,5 +10,6 @@ class Player(BuckShot_Actor):
     pass
   
   # Most important method
+  # @log_action
   def make_choice(self, env):
     pass

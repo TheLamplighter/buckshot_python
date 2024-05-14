@@ -14,6 +14,7 @@ class BuckShot_Environment:
     self.Dealer = BuckShot_Actor()
     self.Player = BuckShot_Actor()
 
+  # Getters
   def get_player(self) -> BuckShot_Actor:
     return self.Player
 
@@ -23,14 +24,25 @@ class BuckShot_Environment:
   def get_shotgun(self) -> BuckShot_Shotgun:
     return self.Shotgun
   
-
+  
   def has_winner(self) -> bool:
     return self.get_player.is_dead or self.get_dealer.is_dead
   
+  # @log_action
   def check_winner(self) -> int:
     if (self.get_dealer.is_dead): return 1
     elif (self.get_player.is_dead): return 0
     else: return -1 # Edge case. Shouldn't happen.
+
+
+  # Setters
+  # @log_action
+  def set_actor_defaults(self, max_hp, threshold) -> None:
+    self.get_dealer.set_max_hp(max_hp),       self.get_player.set_max_hp(max_hp)
+    self.get_dealer.set_threshold(threshold), self.get_player.set_threshold(threshold) 
+    self.get_dealer.to_max_hp(),              self.get_player.to_max_hp()
+    self.get_dealer.clear_inventory(),        self.get_player.clear_inventory()
+    self.get_shotgun.clear_shell_array()
 
 
   # Probably Unnecessary, but I don't
@@ -58,6 +70,7 @@ class BuckShot_Environment:
 
 
   # Looped by .stage(). New rounds until player wins or dies.
+  # @log_action
   def round(self) -> None:
     self.round_up
 
@@ -74,16 +87,13 @@ class BuckShot_Environment:
     return
 
 
+  # @log_action
   def stage(self, max_hp=2, threshold=0) -> None:
     # Increment Stage Counter
     self.stage_up
 
     # Set everything to defaults
-    self.get_dealer.set_max_hp(max_hp),       self.get_player.set_max_hp(max_hp)
-    self.get_dealer.set_threshold(threshold), self.get_player.set_threshold(threshold) 
-    self.get_dealer.to_max_hp(),              self.get_player.to_max_hp()
-    self.get_dealer.clear_inventory(),        self.get_player.clear_inventory()
-    self.get_shotgun.clear_shell_array()
+    self.set_actor_defaults(self, max_hp, threshold)
 
     # Play rounds until there's a winner
     while(not self.has_winner):
@@ -92,6 +102,8 @@ class BuckShot_Environment:
 
   # Play 'length' games. Returns True if player won, and False if player lost.
   # TODO: Maybe a way to track turns/rounds/stages per run?
+  
+  # @log_action
   def game(self, length) -> bool:
     for L in range(length):
       if(L == length-1): thresh = 2

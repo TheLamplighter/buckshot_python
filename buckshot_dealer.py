@@ -33,6 +33,8 @@ class Dealer(BuckShot_Actor):
   # He uses every usable item in Itemslot order, then shoots.
   # He shoots randomly unless he knows the current shell
   # And he always knows the last shell in a load.
+  
+  # @log_action
   def make_choice(self, env: BuckShot_Environment) -> int:
     if(self.item_phase):
       # He cycles through inventory looking for a usable item

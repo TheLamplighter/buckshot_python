@@ -55,7 +55,7 @@ class BuckShot_Inventory():
   def set_actor(self, actor) -> None:
     self.actor = actor
 
-
+  # @log_action
   def place_item(self, item, slot) -> None:
     self.inventory[slot] = self.item_by_id(item)
 

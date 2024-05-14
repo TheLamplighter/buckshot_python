@@ -20,10 +20,11 @@ class BuckShot_Item(ABC):
   def get_id(self):
     return self.id
   
-
+  # @log_action
   def use(self, actor: BuckShot_Actor, env: BuckShot_Environment):
     actor.remove_item(self.get_id)
 
+  # @log_action
   def check_usable(self, actor: BuckShot_Actor, env: BuckShot_Environment):
     return True
   

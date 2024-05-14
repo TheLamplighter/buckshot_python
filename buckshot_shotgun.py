@@ -20,6 +20,7 @@ class BuckShot_Shotgun:
   def add_shell(self, shell) -> None:
     self.get_shell_array().append(shell)
   
+  # @log_action
   def eject_shell(self) -> int:
     return self.get_shell_array().pop(0)
 
