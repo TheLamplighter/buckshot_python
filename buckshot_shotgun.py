@@ -53,6 +53,7 @@ class BuckShot_Shotgun:
       )
 
 
+  # @log_action
   def gen_shell_array(self) -> None:
     max_shells = randint(2, 8)
     

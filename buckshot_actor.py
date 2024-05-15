@@ -76,7 +76,7 @@ class BuckShot_Actor():
     if (self.get_shotgun.get_shell_count() == 1): return True
     else: return self.knower
 
-
+  # @log_action
   def get_cuffed_status(self) -> bool:
     return self.cuffed
   
@@ -144,14 +144,15 @@ class BuckShot_Actor():
 
 
   # Actions
-  # @log_action
   def shoot_shotgun(self, tgt) -> int:
     self.stop_knowing
     return self.get_shotgun.fire_shotgun(tgt)
   
+  # @log_action
   def shoot_enemy(self) -> int:
     return self.shoot_shotgun(self.other_guy)
   
+  # @log_action
   def shoot_self(self) -> int:
     return self.shoot_shotgun(self)
 
@@ -172,9 +173,9 @@ class BuckShot_Actor():
   # Handles actor input, Dealer or Player.
   # @log_action
   def take_turn(self) -> None:
-    if self.cuffed:
+    if self.get_cuffed_status:
       # If cuffed, skip turn and uncuff.
-      self.set_uncuffed()
+      self.set_uncuffed
       return
 
     choice = -5
