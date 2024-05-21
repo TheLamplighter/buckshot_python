@@ -1,26 +1,10 @@
+from buckshot_item import item_id_size
+
+
 class Logger():
     def __init__(self) -> None:
+      self.item_id_size = item_id_size()
       pass
-    
-    actor_event_list = [
-      #Actor Events
-      "[Actor] uses [Item]", "[Actor] gains [Item]", "[Actor] fires at [Actor]", 
-      "[Actor] gains health", "[Actor] loses health", "[Actor] dies", 
-      "[Actor] is handcuffed", "[Actor] wins the stage", "[Actor] ends their turn"
-      ]
-
-    stage_event_list = [
-      #Stage Events
-      "[Stage 'Number'] starts", "Health is set to [Number]",
-    ]
-       
-    shotgun_event_list = [
-      #Shotgun Events
-      "[Shotgun] runs out of ammo", "[Shotgun] is reloaded", "[Shotgun] ejects a round", 
-      "[Shotgun] gains damage", "[Shotgun] goes back to normal", "[Shotgun]",
-      ]
-    
-
     
     def log_action(self, func, cur_actor, extra):
       
@@ -36,7 +20,7 @@ class Logger():
         if func_type == None:
           print()
           print("A new stage starts.")
-          result = function(*args, **kwargs)
+          result = func(*args, **kwargs)
           #Case - env.stage
           pass
 
@@ -62,10 +46,17 @@ class Logger():
 
         elif func_type == None:
           result = func(*args, **kwargs)
+          if result == 1:
+            print("The Dealer is Dead.")
+          elif result == 0:
+            print("The Player is Dead. - [Game Over*]")
+          elif result == -1:
+            print("Error: Invalid Winner")
           #Case - env.check_winner
           pass
 
         elif func_type == None:
+          print("The pieces are in play.")
           result = func(*args, **kwargs)
           #Case - env.set_actor_defaults
           pass
@@ -73,10 +64,22 @@ class Logger():
 
         elif func_type == None:
           result = func(*args, **kwargs)
+
+          if(result > -1) and (result < item_id_size):
+            # Item Logic
+            pass
+          elif(result < item_id_size):
+            # Gun Logic
+            pass
+          else:
+            # Bad Logic
+            pass
+
           #Case - actor.make_choice
           pass
 
         elif func_type == None:
+          print(actor + " shoots " + tgt)
           result = func(*args, **kwargs)
           #Case - actor.shoot_shotgun
           pass
@@ -115,7 +118,8 @@ class Logger():
 
 
         elif func_type == None:
-          print(actor + " gains the item " + tgt)
+          print(actor + " gains [" + tgt + "]")
+          result = func(*args, **kwargs)
           #Case - inventory.place_item
           pass
 
