@@ -84,6 +84,22 @@ class BuckShot_Actor():
   def the_other_guy(self, env: BuckShot_Environment) -> BuckShot_Actor:
     if (self == env.get_dealer): return env.get_player
     else: return env.get_dealer
+
+
+  
+  def actor_state(self):
+    # HP Max
+    # HP
+    # inventory state
+    # The Knower
+    pass
+  def enemy_state(self):
+    return self.actor_state(self.the_other_guy)
+    pass
+  def shotgun_state(self):
+    # Live Rounds
+    # Blank rounds
+    pass
   
 
 
